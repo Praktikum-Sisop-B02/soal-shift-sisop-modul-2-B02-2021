@@ -11,7 +11,7 @@
 #include <wait.h>
 
 #define MKDIR_SLEEP_TIME 5
-#define STR_MAX_LENGTH 100
+#define STR_MAX_LENGTH 75
 #define IMAGE_COUNT 10
 #define IMAGE_DOWNLOAD_DELAY 1
 #define CAESAR_SHIFT 5
@@ -19,27 +19,26 @@
 int kill_child_immediately = 0;
 
 void checkForCommandLineArgs(int argc, char const *argv[]) {
-    printf("jalan");
-    return;
-    for (int i = 1; i < argc; i++) {
+    for (int i = 0; i < argc; i++) {
+        printf("argumen ke %d : %s", i, argv[i]);
         if (strcmp("-z", argv[i]) == 0) {
             kill_child_immediately = 1;
-        } else if (strcmp("-x", argv[i])) {
+        } else if (strcmp("-x", argv[i]) == 0) {
             kill_child_immediately = 0;
         }
     }
 }
 
-void makeKiller(pid_t process_id) {
+void makeKiller(pid_t process_id, pid_t session_id) {
     char file_name[] = "killer.sh";
     FILE *killer_file = fopen(file_name, "w");
 
     fputs("#!bin/bash\n\n", killer_file);
 
     if (kill_child_immediately) {
-        fprintf(killer_file, "kill -9 %d\n", process_id);
+        fprintf(killer_file, "pkill -s %d\n", session_id);
     } else {
-        fprintf(killer_file, "kill -15 %d\n", process_id);
+        fprintf(killer_file, "kill -SIGTERM %d\n", process_id);
     }
 
     fprintf(killer_file, "rm -f %s\n", file_name);
@@ -184,10 +183,10 @@ void makeNewDirectoryAndDownloadPictures(char dir_name[STR_MAX_LENGTH]) {
 }
 
 int main(int argc, char const *argv[]) {
+    pid_t main_process_id = getpid(),
+          main_session_id = getsid(main_process_id);
     checkForCommandLineArgs(argc, argv);
-    pid_t main_process_pid = getpid();
-
-    makeKiller(main_process_pid);
+    makeKiller(main_process_id, main_session_id);
 
     //main loop
     while (1) {

@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define MKDIR_SLEEP_TIME 10
+#define MKDIR_SLEEP_TIME 40
 #define STR_MAX_LENGTH 75
 #define IMAGE_COUNT 10
 #define IMAGE_DOWNLOAD_DELAY 5

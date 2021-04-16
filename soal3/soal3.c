@@ -10,17 +10,16 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define MKDIR_SLEEP_TIME 5
+#define MKDIR_SLEEP_TIME 10
 #define STR_MAX_LENGTH 75
 #define IMAGE_COUNT 10
-#define IMAGE_DOWNLOAD_DELAY 1
+#define IMAGE_DOWNLOAD_DELAY 5
 #define CAESAR_SHIFT 5
 
 int kill_child_immediately = 0;
 
 void checkForCommandLineArgs(int argc, char const *argv[]) {
     for (int i = 0; i < argc; i++) {
-        printf("argumen ke %d : %s", i, argv[i]);
         if (strcmp("-z", argv[i]) == 0) {
             kill_child_immediately = 1;
         } else if (strcmp("-x", argv[i]) == 0) {
@@ -191,7 +190,6 @@ int main(int argc, char const *argv[]) {
     //main loop
     while (1) {
         pid_t child_id;
-        int child_status;
 
         time_t t = time(NULL);
         struct tm *time = localtime(&t);

@@ -7,18 +7,6 @@
 #include <dirent.h>
 #include <syslog.h>
 
-char *rm_type(char* s){
-    char* res;
-    int i;
-    for(i=0; s[i] != '\0'; i++);
-    int n=i-4+1;
-    if (n<1) return NULL;
-    res=(char*)malloc(n*sizeof(char));
-    for (i=0;i<n-1;i++)res[i]=s[i];
-    res[i]='\0';
-    return res;
-}
-
 int main() {
     //nomor 2a
   pid_t child_id;
@@ -54,7 +42,15 @@ int main() {
           int status6;
           if (child_id6 == 0) continue;
 
-          char *newname = rm_type(filename);
+          char *newname;
+          int i;
+          for(i=0; filename[i] != '\0'; i++);
+          int n=i-4+1;
+          if (n<1) NULL;
+          newname=(char*)malloc(n*sizeof(char));
+          for (i=0;i<n-1;i++) newname[i]=filename[i];
+          newname[i]='\0';
+
           char *misah1,*misah2;
           char kind[50], name[50], age[50];
           char *jus;

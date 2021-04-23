@@ -4,6 +4,329 @@
 
 ## Soal Nomor 2
 
+### A. Membuat program C untuk unzip file pets.zip dengan kondisi hanya file foto saja
+
+#### Penyelesaian
+
+```c++
+pid_t child_id;
+  int status;
+  child_id = fork();
+  if (child_id < 0) {
+    char *argmd[]={"mkdir", "-p","/home/arkan/modul2/petshop", NULL};
+    execv("/bin/mkdir", argmd);
+    exit(EXIT_FAILURE);
+  }
+
+  if (child_id == 0) {
+    char *argunz[]={"unzip", "-q", "/home/arkan/modul2/pets.zip","-x","*/*","-d", "/home/arkan/modul2/petshop",NULL};
+    execv("/bin/unzip", argunz);
+    }
+
+  else{
+    while((wait(&status)) > 0);
+   }
+```
+
+#### Penjelasan
+
+Disini saya menggunakan exec unzip dengan fungsi -x yaitu exclude suatu filetype. Karena diharuskan unzip foto saja dan didalam pets.zip hanya ada foto dan folder, maka kita exclude foldernya dengan */*.
+
+### B. Membuat folder dengan nama masing-masing hewan
+
+#### Penyelesaian
+
+```c++
+DIR *dr;
+  struct dirent *folder;
+  dr=opendir("/home/arkan/modul2/petshop");
+  char base[50]="/home/arkan/modul2/petshop/";
+  if (dr != NULL){
+      while ((folder = readdir (dr))!=NULL){
+          char *filename = folder->d_name;
+          if (strcmp(filename, ".") == 0 || strcmp(filename, "..")== 0) continue;
+          pid_t child_id6;
+          child_id6=fork();
+          int status6;
+          if (child_id6 == 0) continue;
+
+          char *newname;
+          int i;
+          for(i=0; filename[i] != '\0'; i++);
+          int n=i-4+1;
+          if (n<1) NULL;
+          newname=(char*)malloc(n*sizeof(char));
+          for (i=0;i<n-1;i++) newname[i]=filename[i];
+          newname[i]='\0';
+
+          char *misah1,*misah2;
+          char kind[50], name[50], age[50];
+          char *jus;
+          while((misah1=strtok_r(newname, "_", &newname))!=NULL){
+            int a=2;
+            char *t_misah1=misah1;
+            
+            while((misah2=strtok_r(t_misah1, ";", &t_misah1))!=NULL){
+              char jos[99];
+              if(a==2){
+                pid_t child_id2;
+                child_id2=fork();
+                int status2;
+                if (child_id2 == 0){
+                  strcpy(jos,base);
+                  strcat(jos,misah2);
+                  char *argmk[]={"mkdir","-p",jos, NULL};
+                  execv("/bin/mkdir", argmk);
+                }
+                else{
+                  while((wait(&status2)) > 0);
+                  strcpy(kind,misah2);
+                }
+              }
+              else if(a==1) strcpy(name, misah2);
+              else if(a==0) strcpy(age, misah2);
+              a--;
+            }
+```
+
+#### Penjelasan
+
+disini saya memakai kodingan dari modul untuk directory listing dengan sedikit modifikasi. lalu karena nama file foto terdapat jenis binatang, nama, dan umur yang menjadi 1, maka perlu kita pisah-pisahkan. namun sebelum itu, karena ada beberapa foto yang memiliki 2 binatang berbeda di dalam 1 foto yang dipisahkan oleh _ , maka perlu dipotong menggunakan strtok_r(r disini berfungsi agar string yang dipisah tidak hilang). setelah semua jenis binatang terpisah, baru kita potong lagi dengan cara yang sama, namun pemisahnya disini adalah ; . setelah itu saya masukkan string2 yang terpisah tersebut ke dalam masing2 variabel (kind, name, age). terakhir saya exec mkdir sesuai nama yang diinginkan (disini diinginkan nama jenis binatang).
+
+### C. memasukkan foto ke masing-masing folder yang sesuai dan jika ada 2 nama di 1 foto, dimasukkan ke folder masing-masing
+
+### Penyelesaian
+
+```c++
+//memasukkan foto
+          pid_t child_id3;
+          child_id3=fork();
+          int status3;
+          char filenya[99], foldernya[99];
+          if(child_id3==0){
+            strcpy(filenya, base);
+            strcat(filenya, kind);
+            strcat(filenya, "/");
+            strcat(name,".jpg");
+            strcat(filenya, name);
+
+            strcpy(foldernya, base);
+            strcat(foldernya, filename);
+            char* argmv[] = {"cp", foldernya, filenya, NULL};
+            execv("/bin/cp", argmv);
+          }
+```
+```c++
+//menghapus foto
+      while(wait(NULL)>0);
+      // printf("%s\n", folder->d_name);
+      char base1[50]="/home/arkan/modul2/petshop/";
+      strcat(base1, folder->d_name);
+      char* argrm[] = {"rm","-r","-f", base1, NULL};
+      execv("/bin/rm", argrm);
+```
+
+### Penjelasan
+
+Awalnya saya ingin menggonakan exec move, namun saya tidak bisa memindahkan 2 nama yang berada di 1 foto itu, jadi saya memakai copy lalu remove.
+
+### D. Jika ada 2 nama di 1 foto, dimasukkan ke folder masing-masing
+
+### Penyelesaian
+
+```c++
+while((misah1=strtok_r(newname, "_", &newname))!=NULL){
+            int a=2;
+            char *t_misah1=misah1;
+            
+            while((misah2=strtok_r(t_misah1, ";", &t_misah1))!=NULL){
+              char jos[99];
+              if(a==2){
+                pid_t child_id2;
+                child_id2=fork();
+                int status2;
+                if (child_id2 == 0){
+                  strcpy(jos,base);
+                  strcat(jos,misah2);
+                  char *argmk[]={"mkdir","-p",jos, NULL};
+                  execv("/bin/mkdir", argmk);
+                }
+                else{
+                  while((wait(&status2)) > 0);
+                  strcpy(kind,misah2);
+                }
+              }
+              else if(a==1) strcpy(name, misah2);
+              else if(a==0) strcpy(age, misah2);
+              a--;
+            }
+```
+
+### Penjelasan
+
+Seperti yang sudah dijelaskan di sub nomor b, karena ada beberapa foto yang memiliki 2 binatang berbeda di dalam 1 foto yang dipisahkan oleh _ , maka perlu dipotong menggunakan strtok_r
+
+### D. Jika ada 2 nama di 1 foto, dimasukkan ke folder masing-masing
+
+### Penyelesaian
+
+```c++
+        char base2[50]="/home/arkan/modul2/petshop/";
+        char ket[50]="/keterangan.txt";
+        strcat(base2, kind);
+        strcat(base2, ket);
+        char skut[99] = "nama : ";
+        strcat(skut, name); 
+        strcat(skut, "\numur  : "); 
+        strcat(skut, age); 
+        strcat(skut, " tahun\n\n");
+        FILE* txt = fopen(base2, "a");
+        fputs(skut, txt);
+        fclose(txt);
+```
+
+### Penjelasan
+
+saya memakai variabel yang sudah dimasukkan tadi(name, kind, age) untuk langsung di put di file keterangan.txt tadi, dengan cara meng cat nama umur tahun tadi ke suatu variabel.
+
+### Penyelesaian Akhir
+
+```C
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <wait.h>
+#include <string.h>
+#include <dirent.h>
+#include <syslog.h>
+
+int main() {
+    //nomor 2a
+  pid_t child_id;
+  int status;
+  child_id = fork();
+  if (child_id < 0) {
+    char *argmd[]={"mkdir", "-p","/home/arkan/modul2/petshop", NULL};
+    execv("/bin/mkdir", argmd);
+    exit(EXIT_FAILURE);
+  }
+
+  if (child_id == 0) {
+    char *argunz[]={"unzip", "-q", "/home/arkan/modul2/pets.zip","-x","*/*","-d", "/home/arkan/modul2/petshop",NULL};
+    execv("/bin/unzip", argunz);
+    }
+
+  else{
+    while((wait(&status)) > 0);
+   }
+//////////////////////////////
+
+//nomor 2b
+  DIR *dr;
+  struct dirent *folder;
+  dr=opendir("/home/arkan/modul2/petshop");
+  char base[50]="/home/arkan/modul2/petshop/";
+  if (dr != NULL){
+      while ((folder = readdir (dr))!=NULL){
+          char *filename = folder->d_name;
+          if (strcmp(filename, ".") == 0 || strcmp(filename, "..")== 0) continue;
+          pid_t child_id6;
+          child_id6=fork();
+          int status6;
+          if (child_id6 == 0) continue;
+
+          char *newname;
+          int i;
+          for(i=0; filename[i] != '\0'; i++);
+          int n=i-4+1;
+          if (n<1) NULL;
+          newname=(char*)malloc(n*sizeof(char));
+          for (i=0;i<n-1;i++) newname[i]=filename[i];
+          newname[i]='\0';
+
+          char *misah1,*misah2;
+          char kind[50], name[50], age[50];
+          char *jus;
+          while((misah1=strtok_r(newname, "_", &newname))!=NULL){
+            int a=2;
+            char *t_misah1=misah1;
+            
+            while((misah2=strtok_r(t_misah1, ";", &t_misah1))!=NULL){
+              char jos[99];
+              if(a==2){
+                pid_t child_id2;
+                child_id2=fork();
+                int status2;
+                if (child_id2 == 0){
+                  strcpy(jos,base);
+                  strcat(jos,misah2);
+                  char *argmk[]={"mkdir","-p",jos, NULL};
+                  execv("/bin/mkdir", argmk);
+                }
+                else{
+                  while((wait(&status2)) > 0);
+                  strcpy(kind,misah2);
+                }
+              }
+              else if(a==1) strcpy(name, misah2);
+              else if(a==0) strcpy(age, misah2);
+              a--;
+            }
+          ///////////////////////////
+
+          //nomor 2c and 2d
+
+          pid_t child_id3;
+          child_id3=fork();
+          int status3;
+          char filenya[99], foldernya[99];
+          if(child_id3==0){
+            strcpy(filenya, base);
+            strcat(filenya, kind);
+            strcat(filenya, "/");
+            strcat(name,".jpg");
+            strcat(filenya, name);
+
+            strcpy(foldernya, base);
+            strcat(foldernya, filename);
+            char* argmv[] = {"cp", foldernya, filenya, NULL};
+            execv("/bin/cp", argmv);
+          }
+          // while(wait(NULL)>0);
+          // pid_t child_id5;
+          // child_id5=fork();
+          // int status5;
+          // if(child_id5==0){
+
+              //nomor 2e
+            char base2[50]="/home/arkan/modul2/petshop/";
+            char ket[50]="/keterangan.txt";
+            strcat(base2, kind);
+            strcat(base2, ket);
+            char skut[99] = "nama : ";
+            strcat(skut, name); 
+            strcat(skut, "\numur  : "); 
+            strcat(skut, age); 
+            strcat(skut, " tahun\n\n");
+            FILE* txt = fopen(base2, "a");
+            fputs(skut, txt);
+            fclose(txt);
+          // }
+      }
+      while(wait(NULL)>0);
+      // printf("%s\n", folder->d_name);
+      char base1[50]="/home/arkan/modul2/petshop/";
+      strcat(base1, folder->d_name);
+      char* argrm[] = {"rm","-r","-f", base1, NULL};
+      execv("/bin/rm", argrm);
+    }
+   //////////////////////         
+      (void) closedir (dr);
+}
+}
+```
+
 ## Soal Nomor 3
 
 ### A. Membuat sebuah program C yang membuat sebuah direktori baru dengan format timestamp YYYY-mm-dd_HH:ii:ss setiap 40 detik

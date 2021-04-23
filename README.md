@@ -166,7 +166,7 @@ while((misah1=strtok_r(newname, "_", &newname))!=NULL){
 
 Seperti yang sudah dijelaskan di sub nomor b, karena ada beberapa foto yang memiliki 2 binatang berbeda di dalam 1 foto yang dipisahkan oleh _ , maka perlu dipotong menggunakan strtok_r
 
-### D. Jika ada 2 nama di 1 foto, dimasukkan ke folder masing-masing
+### E. membuat keterangan sesuai ketentuan di masing2 folder
 
 ### Penyelesaian
 

@@ -2,7 +2,7 @@
 
 ## Soal Nomor 1
 
-###Penyelesaian
+#### Penyelesaian
 
 ```
 int main() {

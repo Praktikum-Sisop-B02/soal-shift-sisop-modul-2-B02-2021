@@ -203,7 +203,7 @@ Setelah, selesai melakukan pendownload-an pada 3 file tersebut, maka yang akan d
         }
     }
 ```
-Untuk Pengunzipan sendiri telah ada perintahnya yaitu path nya ```/bin/unzip```. Disini, untuk mempermudah pengunzipan, maka akan dimasukkan dulu kedalam variable dan kemudian variable tersebut di eksekusi menggunakan command execv().
+Untuk Pengunzipan sendiri telah ada perintahnya yaitu  ```/bin/unzip```. Disini, untuk mempermudah pengunzipan, maka akan dimasukkan dulu kedalam variable dan kemudian variable tersebut di eksekusi menggunakan command execv().
 Setelah dilakukannya pengekstrakan file, maka file tersebut akan di jalankan fungsi ```moveLocation()```. Pada fungsi ini, folder pada file yang telah diekstrak tersebut akan dipindahkan atau melakukan rename dengan cara remove directory ke directory dengan nama Fylm, Pyoto, dan Musyik dikarenakan Stevany sangat menyukai huruf 'Y'.
 ```
 void moveLocation() {
@@ -232,7 +232,7 @@ void moveLocation() {
     }
 }
 ```
-Untuk pemindahan atau rename directory ini, menggunakan command mv yaitu move dan pathnya ```/bin/mv```.
+Untuk pemindahan atau rename directory ini, menggunakan command mv yaitu  ```/bin/mv```.
 Kemudian, setelah dilakukannya pemindahan nama directory, maka menunggu atau melakukan perubahan waktu pada sistem hingga mencapai waktu yang diinginkan yaitu 22.22 yang merupakan waktu ulang tahunnya Stevany.
 ```
  char time_string[100];

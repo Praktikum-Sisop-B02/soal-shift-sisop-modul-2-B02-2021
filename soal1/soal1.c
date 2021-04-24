@@ -125,7 +125,7 @@ void downloadAllThreeArchive() {
         exit(EXIT_FAILURE);
     }
     if (download_child_id == 0) {
-        // downloadFromGoogleDrives();
+         downloadFromGoogleDrives();
     }
 }
 
